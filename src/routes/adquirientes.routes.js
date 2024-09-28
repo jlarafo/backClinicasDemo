@@ -9,18 +9,18 @@ import {
 
 const router = Router();
 
-// GET all Materias
-router.get("/adquirientes", getAdquirientes);
+// GET all Pacientes
+router.get("/pacientes", getAdquirientes);
 
-// GET An Materias
-router.get("/adquirientes/:id", getAdquiriente);
+// GET An Pacientes
+router.get("/pacientes/:id", getAdquiriente);
 
-// DELETE An Materias
-router.delete("/adquirientes/:id", deleteAdquirientes);
+// DELETE An Pacientes
+router.delete("/pacientes/:id", deleteAdquirientes);
 
-// INSERT An Materias
-router.post("/adquirientes", createAdquiriente);
+// INSERT An Pacientes
+router.post("/pacientes", createAdquiriente);
 
-router.patch("/adquirientes/:id", updateAdquiriente);
+router.patch("/pacientes/:id", updateAdquiriente);
 
 export default router;
