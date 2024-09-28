@@ -4,6 +4,8 @@ import morgan from "morgan";
 
 import indexRoutes from "./routes/index.routes.js";
 import adquirientesRoutes from "./routes/adquirientes.routes.js";
+import historiasRoutes from "./routes/historias.routes.js";
+import documentosRoutes from "./routes/documentos.routes.js";
 import cors from 'cors'; // Importar cors usando ES Modules
 
 const app = express();
@@ -24,6 +26,8 @@ app.use(express.json());
 app.use("/", indexRoutes);
 
 app.use("/api", adquirientesRoutes);
+app.use("/api", historiasRoutes);
+app.use("/api", documentosRoutes);
 
 app.use((req, res, next) => {
   res.status(404).json({ message: "Not found" });
