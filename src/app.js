@@ -1,14 +1,19 @@
 import express from "express";
 import morgan from "morgan";
-
-
 import indexRoutes from "./routes/index.routes.js";
 import adquirientesRoutes from "./routes/adquirientes.routes.js";
 import historiasRoutes from "./routes/historias.routes.js";
 import documentosRoutes from "./routes/documentos.routes.js";
+import archivosRoutes from "./routes/archivos.routes.js";
 import cors from 'cors'; // Importar cors usando ES Modules
+import bodyParser from "body-parser"; // Changed require to import
 
 const app = express();
+
+// Aumenta el límite del tamaño del cuerpo
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 
 // Configuración de CORS
 const corsOptions = {
@@ -28,9 +33,12 @@ app.use("/", indexRoutes);
 app.use("/api", adquirientesRoutes);
 app.use("/api", historiasRoutes);
 app.use("/api", documentosRoutes);
+app.use("/api", archivosRoutes)
+
 
 app.use((req, res, next) => {
   res.status(404).json({ message: "Not found" });
 });
+
 
 export default app;

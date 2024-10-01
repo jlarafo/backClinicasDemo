@@ -53,6 +53,7 @@ export const createHistoria = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Something went wrong" });
     }
+    
 };
 
 export const updateHistoria = async (req, res) => {
