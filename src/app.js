@@ -4,7 +4,7 @@ import indexRoutes from "./routes/index.routes.js";
 import adquirientesRoutes from "./routes/adquirientes.routes.js";
 import historiasRoutes from "./routes/historias.routes.js";
 import documentosRoutes from "./routes/documentos.routes.js";
-import archivosRoutes from "./routes/archivos.routes.js";
+import archivosRoutes from "./routes/odontogramas.routes.js";
 import cors from 'cors'; // Importar cors usando ES Modules
 import bodyParser from "body-parser"; // Changed require to import
 

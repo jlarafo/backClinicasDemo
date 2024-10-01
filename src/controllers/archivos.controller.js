@@ -1,28 +1,35 @@
 import path from "path";
 import fs from 'fs';
 
+import cloudinary from 'cloudinary';
+
+// Configurar Cloudinary con tus credenciales
+cloudinary.v2.config({
+    cloud_name: 'dniiiwih9', 
+    api_key: '255452514566172', 
+    api_secret: 'l0DQ9FwJCCMBmgdmvuE98mqrUDo'
+});
+
 
 export const uploadImage = (req, res) => {
-    const { image } = req.body;
+    const { image, customName } = req.body; // Se recibe la imagen y el nombre personalizado
 
     if (!image) {
         return res.status(400).json({ error: 'No image provided' });
     }
 
-    // Extraer el tipo de imagen y el contenido
-    const base64Data = image.replace(/^data:image\/png;base64,/, '');
+    // Definir un nombre personalizado (si se proporciona) o usar uno por defecto
+    const publicId = customName ? `${customName}` : `image-${Date.now()}`;
 
-    // Definir la ruta para guardar la imagen
-    // const filePath = path.join(__dirname, '../uploads', `image-${Date.now()}.png`);
-    const filePath = path.join(process.cwd(), 'uploads', `image-${Date.now()}.png`);
-
-    
-    // Escribir el archivo en disco
-    fs.writeFile(filePath, base64Data, 'base64', (err) => {
-        if (err) {
-            return res.status(500).json({ error: 'Error saving the image' });
+    // Subir la imagen a Cloudinary con el nombre personalizado
+    cloudinary.v2.uploader.upload(image, { folder: 'odontogramas',public_id: publicId }, (error, result) => {
+        if (error) {
+            return res.status(500).json({ error: 'Error uploading the image' });
         }
-        res.json({ message: 'Image saved successfully', filePath });
+        res.json({
+            message: 'Image uploaded successfully',
+            url: result.secure_url,
+            public_id: result.public_id, // Retornar el ID público de la imagen
+        });
     });
 };
-

@@ -9,7 +9,7 @@ import {
 const router = Router();
 
 // Ruta para subir imagen
-router.post('/upload', uploadImage);
+router.post('/subirOdontograma', uploadImage);
 
 // module.exports = router;
 export default router;
