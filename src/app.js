@@ -5,6 +5,7 @@ import adquirientesRoutes from "./routes/adquirientes.routes.js";
 import historiasRoutes from "./routes/historias.routes.js";
 import documentosRoutes from "./routes/documentos.routes.js";
 import archivosRoutes from "./routes/odontogramas.routes.js";
+import signsRoutes from "./routes/signs.routes.js";
 import cors from 'cors'; // Importar cors usando ES Modules
 import bodyParser from "body-parser"; // Changed require to import
 
@@ -34,7 +35,7 @@ app.use("/api", adquirientesRoutes);
 app.use("/api", historiasRoutes);
 app.use("/api", documentosRoutes);
 app.use("/api", archivosRoutes)
-
+app.use("/api", signsRoutes)
 
 app.use((req, res, next) => {
   res.status(404).json({ message: "Not found" });
