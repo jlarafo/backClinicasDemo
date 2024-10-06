@@ -43,13 +43,31 @@ export const deleteDocumentos = async (req, res) => {
 
 export const createDocumento = async (req, res) => {
     try {
-        const { documento, item, descripcion, cantidad, precio, fecha } = req.body;
-        const [result] = await pool.query(
-            "INSERT INTO documentos (documento, item, descripcion, cantidad, precio, fecha) VALUES (?, ?, ?, ?, ?, ?)",
-            [documento, item, descripcion, cantidad, precio, fecha]
-        );
+        // Aquí asumimos que req.body es un arreglo
+        const documentos = req.body;
 
-        res.status(201).json({ id: result.insertId, documento, item, descripcion, cantidad, precio, fecha });
+        // Verificamos que req.body sea un arreglo
+        if (!Array.isArray(documentos)) {
+            return res.status(400).json({ message: "El cuerpo de la solicitud debe ser un arreglo" });
+        }
+
+        // Creamos un array de promesas para insertar cada documento
+        const promises = documentos.map(async (documento) => {
+            const { documento: doc, item, descripcion, cantidad, precio, fecha } = documento;
+            
+            const [result] = await pool.query(
+                "INSERT INTO documentos (documento, item, descripcion, cantidad, precio, fecha) VALUES (?, ?, ?, ?, ?, ?)",
+                [doc, item, descripcion, cantidad, precio, fecha]
+            );
+
+            return { id: result.insertId, doc, item, descripcion, cantidad, precio, fecha };
+        });
+
+        // Esperamos a que todas las promesas se resuelvan
+        const results = await Promise.all(promises);
+
+        // Enviamos la respuesta con los resultados
+        res.status(201).json(results);
     } catch (error) {
         res.status(500).json({ message: "Something went wrong" });
     }
