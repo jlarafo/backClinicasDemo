@@ -41,37 +41,48 @@ export const deleteDocumentos = async (req, res) => {
 };
 
 
-export const createDocumento = async (req, res) => {
+export const createDocumento = async (req, res) => { 
     try {
-        // Aquí asumimos que req.body es un arreglo
-        const documentos = req.body;
+        const { itemsFormateados } = req.body;
 
-        // Verificamos que req.body sea un arreglo
-        if (!Array.isArray(documentos)) {
-            return res.status(400).json({ message: "El cuerpo de la solicitud debe ser un arreglo" });
+        // Verificar si itemsFormateados es un arreglo
+        if (!Array.isArray(itemsFormateados) || itemsFormateados.length === 0) {
+            return res.status(400).json({ message: "El cuerpo de la solicitud debe contener un arreglo de itemsFormateados." });
         }
 
-        // Creamos un array de promesas para insertar cada documento
-        const promises = documentos.map(async (documento) => {
-            const { documento: doc, item, descripcion, cantidad, precio, fecha } = documento;
-            
+        // Crear un arreglo para almacenar los resultados de las inserciones
+        const results = [];
+
+        // Iterar sobre cada item en el arreglo
+        for (const item of itemsFormateados) {
+            const { documento, item: itemCodigo, descripcion, cantidad, precio, fecha } = item;
+
+            // Realizar la inserción en la base de datos
             const [result] = await pool.query(
                 "INSERT INTO documentos (documento, item, descripcion, cantidad, precio, fecha) VALUES (?, ?, ?, ?, ?, ?)",
-                [doc, item, descripcion, cantidad, precio, fecha]
+                [documento, itemCodigo, descripcion, cantidad, precio, fecha]
             );
 
-            return { id: result.insertId, doc, item, descripcion, cantidad, precio, fecha };
-        });
+            // Almacenar el resultado de la inserción en el arreglo
+            results.push({
+                id: result.insertId,
+                documento,
+                item: itemCodigo,
+                descripcion,
+                cantidad,
+                precio,
+                fecha
+            });
+        }
 
-        // Esperamos a que todas las promesas se resuelvan
-        const results = await Promise.all(promises);
-
-        // Enviamos la respuesta con los resultados
+        // Devolver los resultados de todas las inserciones
         res.status(201).json(results);
+
     } catch (error) {
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(500).json({ message: "Something went wrong", error: error.message });
     }
 };
+
 
 export const updateDocumento = async (req, res) => {
     try {
